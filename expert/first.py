@@ -18,16 +18,24 @@ def gotAndCheckInput():
     from colorama import Fore
 
     for retryCounter in range(0, 3):
-        print(Fore.GREEN + "Write file name: " + Fore.WHITE)
+
+        print(Fore.GREEN + "Write file name: (q for exit)" + Fore.WHITE)
         fileName = input()
-        with open(fileName) as file:
-            fileContent = file.read()
-        print("File closed ? -> " + file.closed) 
+        if fileName == "q" or fileName == "Q":
+            return 0
+        fileContent = ""
+
+        try:
+            with open(fileName) as file:
+                fileContent = file.read()
+        except IOError:
+            print(Fore.RED + f"No such file or directory: '{fileName}'" + Fore.WHITE) 
+
         if fileContent:
             return 1
-    print(Style.RESET_ALL)
     return 0
-        
+
+from colorama import Fore, Style        
 sayHello()
 if not gotAndCheckInput():
-    print(Fore.RED + "Got no input." + Style.RESET_ALL)
+    print(Fore.RED + "Got no input")
