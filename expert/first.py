@@ -1,10 +1,9 @@
 import os
+from parseFile import parseInput 
+from colorama import init, Fore, Style
 
 def sayHello():
     os.system('cls' if os.name == 'nt' else 'clear')
-
-    from colorama import init, Fore, Style
-    init()
     
     print(Fore.GREEN +r" ______  __  __   ______  ______   ______  ______     ______   __  __   ______   ______  ______   __    __    |")
     print(r"/\  ___\/\_\_\_\ /\  == \/\  ___\ /\  == \/\__  _\   /\  ___\ /\ \_\ \ /\  ___\ /\__  _\/\  ___\ /\ \-./  \   |")
@@ -15,7 +14,7 @@ def sayHello():
     print(Style.RESET_ALL)
 
 def gotAndCheckInput():
-    from colorama import Fore
+    fileContent = ""
 
     for retryCounter in range(0, 3):
 
@@ -23,7 +22,6 @@ def gotAndCheckInput():
         fileName = input()
         if fileName == "q" or fileName == "Q":
             return 0
-        fileContent = ""
 
         try:
             with open(fileName) as file:
@@ -32,10 +30,13 @@ def gotAndCheckInput():
             print(Fore.RED + f"No such file or directory: '{fileName}'" + Fore.WHITE) 
 
         if fileContent:
-            return 1
+            return fileContent
     return 0
 
-from colorama import Fore, Style        
+init()
 sayHello()
-if not gotAndCheckInput():
+fileInput = gotAndCheckInput()
+if fileInput:
+    parseInput(fileInput)
+else:
     print(Fore.RED + "Got no input")
