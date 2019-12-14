@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 import os
+import sys, traceback
 from parseFile import parseInput
 from colorama import init, Fore, Style
+from classes import Data
 
 def sayHello():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -23,9 +25,14 @@ def gotAndCheckInput():
     for retryCounter in range(0, 3):
 
         print(Fore.GREEN + "Write file name: (q for exit)" + Fore.WHITE)
-        writtenInput = input()
+        try:
+            writtenInput = input()
+        except IOError:
+            return 0
+
         if writtenInput == "q" or writtenInput == "Q":
             return 0
+
         try:
             with open(writtenInput) as file:
                 fileContent = file.read()
@@ -39,13 +46,22 @@ def gotAndCheckInput():
 
 
 def main():
-    init()
-    sayHello()
-    fileInput = gotAndCheckInput()
-    if fileInput:
-        parseInput(fileInput)
-    else:
-        print(Fore.RED + "Got no input")
+    try:
+        init()
+        sayHello()
+        fileInput = gotAndCheckInput()
+        if fileInput:
+            data = Data()
+            parseInput(fileInput, data)
+        else:
+            print(Fore.RED + "Got no input")
+    except KeyboardInterrupt:
+        print(Fore.YELLOW + "Shutdown requested...exiting")
+    except Exception:
+        traceback.print_exc(file=sys.stdout)
+    sys.exit(0)
+            
+    
 
 if __name__ == '__main__':
     main()

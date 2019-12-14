@@ -1,12 +1,12 @@
 from colorama import Fore
 
 class Data:
-	allRules
-	allFacts
-	allQueries
+	allRules = ""
+	allFacts = ""
+	allQueries = ""
 	listRules = []
 
-	def showRules();
+	def showRules():
 		print(self.allFacts)
 
 	def showFacts():
@@ -15,9 +15,9 @@ class Data:
 	def showQueries():
 		print(self.allQueries)
 
-	def showEveryRule();
+	def showEveryRule():
 		
-		if len(self.listRules) == 0
+		if len(self.listRules) == 0:
 			print(Fore.RED + "No rules was recognised")
 			return 
 		
