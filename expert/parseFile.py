@@ -1,5 +1,6 @@
 from colorama import Fore, Style
 import re
+from classes import Data
 
 REGEXP_RULES = "\n|^([\w\s]*[\W\S]*)\n?"
 REGEXP_ONE_RULE = "^([\(\)\|\^\w\s\+\!\-]+)(=>|<=>)([\(\)\|\^\w\s\+\!\-]+)(#|\n)"
@@ -27,7 +28,10 @@ def parseInput(fileInput):
         print(Fore.RED + "Input file component not found")
         return ;
 
-    getRules(rules)
-    getFacts(facts)
-    getQueries(queries)
+    data = Data()
+    data.allRules = getRules(rules)
+    data.allFacts = getFacts(facts)
+    data.allQueries = getQueries(queries)
+    
+#def getRules(stringWithRules):
     
