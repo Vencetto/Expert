@@ -33,17 +33,10 @@ def parseInput(fileInput, data):
     if fault:
         print(Fore.RED + "Input file component not found")
         return ;
-
-    data.showEveryRule()
-    data.showFacts()
-    data.showQueries()
-
-    getVariables(data)
-    getUnknownVars(data)
-    getKnownVars(data)
-
-    data.showUnknownVars()
-    data.showVarsStatuses()
+    else:
+        getVariables(data)
+        getUnknownVars(data)
+        getKnownVars(data)
 
 
 def getVariables(data):

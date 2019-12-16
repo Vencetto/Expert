@@ -6,6 +6,8 @@ class Data:
     dictRules = {}
     dictVarsStatuses = {}
     listUnknownVars = []
+    listDependencies = []
+    listUnexpectedChars = ()
 
     def showFacts(self):
         print(Fore.CYAN + "This was recognised as facts -> " + Fore.WHITE + self.allFacts)
@@ -42,3 +44,10 @@ class Data:
             print(Fore.RED + "No vars need to explore.")
             return
         print(Fore.MAGENTA + "Need to find " + Fore.WHITE + ", ".join(self.listUnknownVars))
+
+    def showAll(self):
+        self.showEveryRule()
+        self.showFacts()
+        self.showQueries()
+        self.showUnknownVars()
+        self.showVarsStatuses()

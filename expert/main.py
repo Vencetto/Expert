@@ -33,7 +33,7 @@ def gotAndCheckInput():
 
     for retryCounter in range(0, 3):
 
-        print(Fore.GREEN + "Write file name: (q for exit OR v for visual choose)" + Fore.WHITE)
+        print(Fore.GREEN + "Write file name: (q for exit OR v for visual mode)" + Fore.WHITE)
         try:
             writtenInput = input()
         except IOError:
@@ -48,7 +48,7 @@ def gotAndCheckInput():
             with open(writtenInput) as file:
                 fileContent = file.read()
         except IOError:
-            print(Fore.RED + f"Troubles with reading file: '{writtenInput}'" + Fore.WHITE) 
+            print(Fore.RED + f"Troubles with reading file: '{writtenInput}'") 
 
         if fileContent:
             return fileContent
@@ -64,6 +64,8 @@ def main():
         if fileInput:
             data = Data()
             parseInput(fileInput, data)
+            #data.showAll()
+            algo(data)
         else:
             print(Fore.RED + "Got no input")
     except KeyboardInterrupt:
