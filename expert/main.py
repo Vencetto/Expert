@@ -1,9 +1,18 @@
 #!/usr/bin/env python
+#requires python v >= 3
 import os
 import sys, traceback
 from parseFile import parseInput
 from colorama import init, Fore, Style
 from classes import Data
+import tkinter
+from tkinter import filedialog
+
+def chooseFileBox():
+    root = tkinter.Tk()
+    root.withdraw()
+    return filedialog.askopenfilename()
+
 
 def sayHello():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -24,7 +33,7 @@ def gotAndCheckInput():
 
     for retryCounter in range(0, 3):
 
-        print(Fore.GREEN + "Write file name: (q for exit)" + Fore.WHITE)
+        print(Fore.GREEN + "Write file name: (q for exit OR v for visual choose)" + Fore.WHITE)
         try:
             writtenInput = input()
         except IOError:
@@ -32,12 +41,14 @@ def gotAndCheckInput():
 
         if writtenInput == "q" or writtenInput == "Q":
             return 0
+        if writtenInput == "v" or writtenInput == "V":
+            writtenInput = chooseFileBox()
 
         try:
             with open(writtenInput) as file:
                 fileContent = file.read()
         except IOError:
-            print(Fore.RED + f"No such file or directory: '{writtenInput}'" + Fore.WHITE) 
+            print(Fore.RED + f"Troubles with reading file: '{writtenInput}'" + Fore.WHITE) 
 
         if fileContent:
             return fileContent
