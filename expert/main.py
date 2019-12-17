@@ -27,6 +27,30 @@ def sayHello():
     print("########## ###    ### ###        ########## ###    ###    ###              ########     ###     ########     ###     ########## ###       ###     |")
     print("---------------------------------------------------------------------------------------------------------------------------------------------------\n")
 
+def exeFlags(flags, data):
+    if 'l' in flags or 'L' in flags:
+        data.showAll()  
+    else:
+        if 'q' in flags or 'Q' in flags:
+            data.showQueries()
+        if 'r' in flags or 'R' in flags:
+            data.showEveryRule()
+        if 'v' in flags or 'V' in flags:
+            data.showVarsStatuses()
+        if 'u' in flags or 'U' in flags:
+            data.showUnknownVars()
+        if 'x' in flags or 'X' in flags:
+            data.showUnexpectedChars()      
+    
+def showFlags():
+    print(Fore.GREEN + "Anything else ?")
+    print(Fore.YELLOW + "-F -shows all facts")
+    print("\t-Q -shows all queries")
+    print("\t-R -shows every rule")
+    print("\t-V -shows all vars and their statuses")
+    print("\t-U -shows all unknown variables/queries")
+    print("\t-X -shows all unexpected chars")
+    print("\t-L -shows all" + Fore.WHITE)       
 
 def gotAndCheckInput():
     fileContent = ""
@@ -64,8 +88,15 @@ def main():
         if fileInput:
             data = Data()
             parseInput(fileInput, data)
-            #data.showAll()
             algo(data)
+            data.showResult()
+            showFlags()
+            try:
+                flags = input()
+                if not flags.isspace():
+                    exeFlags(flags, data) # test this place
+            except IOError:
+                return 0
         else:
             print(Fore.RED + "Got no input")
     except KeyboardInterrupt:

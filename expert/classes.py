@@ -1,13 +1,13 @@
 from colorama import Fore
 
 class Data:
-    allFacts = ""
-    allQueries = ""
-    dictRules = {}
-    dictVarsStatuses = {}
-    listUnknownVars = []
-    listDependencies = []
-    listUnexpectedChars = ()
+    allFacts = ""               # string with input facts
+    allQueries = ""             # string with input queries
+    dictRules = {}              # dictionary of input rules (string - tuple)
+    dictVarsStatuses = {}       # dictionary (var, like 'A' - status, like 'True')
+    listUnknownVars = []        # list of vars to find - ?ABC, queries
+    listDependencies = []       # list of dependencies for algorithm, what we nned to find to get final answer
+    listUnexpectedChars = ()    # list of chars, that we do not expect to apper in constructions or couldn't recognise
 
     def showFacts(self):
         print(Fore.CYAN + "This was recognised as facts -> " + Fore.WHITE + self.allFacts)
@@ -45,9 +45,20 @@ class Data:
             return
         print(Fore.MAGENTA + "Need to find " + Fore.WHITE + ", ".join(self.listUnknownVars))
 
+    def showUnexpectedChars(self):
+        if len(self.listOfUnexpectedChars) > 0:
+            print(Fore.RED + "Non recognised chars in input constructions -> " + ", ".join(self.listOfUnexpectedChars) + Fore.WHITE)
+        else:
+            print(Fore.GREEN + "No unexpected chars were found" + Fore.WHITE)
+
     def showAll(self):
         self.showEveryRule()
         self.showFacts()
         self.showQueries()
         self.showUnknownVars()
         self.showVarsStatuses()
+        self.showUnexpectedChars()
+
+    def showresult(self):
+        for var in self.listUnknownVars:
+            print(Fore.YELLOW + var + " is " + Fore.GREEN + self.dictVarsStatuses[var])

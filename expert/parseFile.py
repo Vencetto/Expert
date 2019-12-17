@@ -1,7 +1,7 @@
 from colorama import Fore, Style
 import re
 
-REGEXP_ONE_RULE = r'^(\w+[\(\)\|\^\w\s\+\!\-]+)(=>|<=>)([\(\)\|\^\w\s\+\!\-]+)[\#|\n]'
+REGEXP_ONE_RULE = r'^(\!?[A-Z][A-Z\s\|\+\(\)\!\^]*)(=>|<=>)(\s*\!?[A-Z][A-Z\s\|\+\(\)\!\^]*)[\#|\n]'
 REGEXP_FACTS = r'(\=\w+)'
 REGEXP_QUERIES = r'(\?\w+)'
 
@@ -42,18 +42,18 @@ def parseInput(fileInput, data):
 def getVariables(data):
     for rule in data.dictRules:
         for char in rule:
-            char.upper()
             if char.isalpha() and char not in data.dictVarsStatuses:
                 data.dictVarsStatuses[char] = False
+            if not char.isalpha():
+                data.listOfUnexpectedChars.append(char)
+                
 
 def getUnknownVars(data):
     for querieChar in data.allQueries:
-        querieChar.upper()
         if querieChar.isalpha() and querieChar not in data.listUnknownVars:
             data.listUnknownVars.append(querieChar)
 
 def getKnownVars(data):
     for factChar in data.allFacts:
-        factChar.upper()
         if factChar.isalpha() and factChar in data.dictVarsStatuses:
             data.dictVarsStatuses[factChar] = True
