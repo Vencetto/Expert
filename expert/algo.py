@@ -5,9 +5,9 @@ OPERATIONS = '+!|^()=<>'
 def algo(data):
 
     # add first dapandencies from queries
-    for query in data.listUnknownVars:
-        if query in data.dictVarsStatuses and data.dictVarsStatuses[query] == 'False'
-            listDependencies.append(str(query))
+    for queryLetter in data.listUnknownVars:
+        if queryLetter in data.dictVarsStatuses and data.dictVarsStatuses[queryLetter] == 'False' and not queryLetter in data.listDependencies
+            data.listDependencies.append(str(queryLetter))
             print('{query} added to list of dependencies')
     
     # check if all vars we nedd is already known
@@ -17,7 +17,7 @@ def algo(data):
         for rule in data.dictRules:
 
             # check vars in rule to be dependent / needed to be find / are in list listUnknownVars
-            if checkDependencies(rule, data):
+            if checkDependencies(rule, data.listUnknownVars):
 
                 # if all vars are known and operations are expected
                 if checkCanCalculate(rule.replace(' ', ''), data):
@@ -31,26 +31,42 @@ def algo(data):
                     # go to next rule
                     continue
 
-def calculate(rule, data):
+def calculate(rule, data): # maybe should try replacing calculated part with 1 or 0 OR replacing all vars with them idk...
     print('calculating {rule}')
     i = 0
-    leftValue, rightValue = "", ""
-    
+
     for char in rule:
         if char.isalpha():
             continue # maybe return it's value somehow
         elif char in OPERATIONS: # more functionality, more if'es
             if char == '(' or char == ')':
-               # find last bracket and check them to be enough in str ant them feed this str[i:] to calculate func
+               if checkBrackets(rule):
+                   calculate(rule[i + 1: rule.rfind(')') - 1]) # find last bracket, them feed this str[i:] to calculate func
+                else:
+                    return ''
             if char == '=' and rule[i + 1] == '>':
                 # => case
-            if if char == '<' and rule[i + 1] == '=' and rule[i + 2] == '>':
+            if if char == '<' and (len(rule) > i + 1) and rule[i + 1] == '=' and rule[i + 2] == '>':
                 # case <=>
             if len(rule[:i]) == 1 and len(rule[i:]) == 1 # this won't work 
                 basicOp(data.dictVarsStatuses[rule[:i]], data.dictVarsStatuses[rule[i:]], char)
         else:
             calculate(rule[i:], data)
         i += 1
+
+def checkBrackets(rule): 
+    open_br = '(' 
+    close_br = ')'
+    map = dict(zip(open_br, close_br)) 
+    queue = []
+  
+    for i in rule: 
+        if i in open_br: 
+            queue.append(map[i]) 
+        elif i in close_br: 
+            if not queue or i != queue.pop(): 
+                return 0
+    return 1
 
 def basicOp(v1, v2, op):
     if op == '+':
@@ -78,12 +94,12 @@ def checkCanCalculate(rule, data):
     print("{rule} can be calculated")
     return 1
 
-def checkDependencies(rule, data):
-    # check if in rule after '=' exist one of the wanted vars
-    if any(unknown in rule.split('=')[1] in data.listUnknownVars):
+def checkDependencies(rule, listUnknownVars):
+    # check if in rule exists one of the wanted vars
+    if any(unknown in rule in listUnknownVars):
 
-        # DELETE NEXT ROW LATER 
-        print(f'found one of the list {0} in {rule}', ', '.join(data.listUnknownVars))
+        # DELETE NEXT ROW LATER
+        print(f'found one of the list {0} in {rule}'.format(', '.join(listUnknownVars)))
 
         return 1
     else:

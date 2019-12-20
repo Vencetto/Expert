@@ -53,7 +53,7 @@ def showFlags():
     print("\t-L -shows all" + Fore.WHITE)       
 
 def gotAndCheckInput():
-    fileContent = ""
+    fileContent = ''
 
     for retryCounter in range(0, 3):
 
@@ -78,13 +78,28 @@ def gotAndCheckInput():
             return fileContent
     return 0
 
+def getArgInput(fileName):
+    fileContent = ''
+
+    try:
+       with open(fileName) as file:
+           fileContent = file.read()
+       except IOError:
+           print(Fore.RED + f"Troubles with reading file: '{fileName}'") 
+
+       if fileContent:
+           return fileContent
+    return ''
 
 
 def main():
     try:
-        init()
-        sayHello()
-        fileInput = gotAndCheckInput()
+        if len(sys.argv) > 1:
+            init()
+            sayHello()
+            fileInput = gotAndCheckInput()
+        else:
+            fileInput = getArgInput(sys.argv[1]) # test this
         if fileInput:
             data = Data()
             parseInput(fileInput, data)
