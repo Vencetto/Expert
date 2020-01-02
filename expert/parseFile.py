@@ -1,18 +1,16 @@
 from colorama import Fore, Style
 import re
 
-REGEXP_ONE_RULE = r'^(\!?[A-Z][A-Z\s\|\+\(\)\!\^]*)(=>|<=>)(\s*\!?[A-Z][A-Z\s\|\+\(\)\!\^]*)[\#|\n]'
-REGEXP_FACTS = r'(\=\w+)'
-REGEXP_QUERIES = r'(\?\w+)'
+from constants import REGEXP_QUERIES, REGEXP_FACTS, REGEXP_ONE_RULE, OPS
 
 def parseInput(fileInput, data):
     fault = False
 
     tempList = re.findall(REGEXP_ONE_RULE, fileInput, re.MULTILINE)
     for elem in tempList:
-        data.dictRules["".join(elem).strip()] = elem
+        data.allRules.append("".join(elem).strip())
 
-    if len(data.dictRules) == 0:
+    if len(data.allRules) == 0:
         print(Fore.YELLOW + "Rules was not found in file")
         fault = True
         
@@ -35,23 +33,22 @@ def parseInput(fileInput, data):
         return ;
     else:
         getVariables(data)
-        getUnknownVars(data)
+        getQueries(data)
         getKnownVars(data)
 
 
 def getVariables(data):
-    for rule in data.dictRules:
+    for rule in data.allRules:
         for char in rule:
             if char.isalpha() and char not in data.dictVarsStatuses:
                 data.dictVarsStatuses[char] = False
-            if not char.isalpha():
-                data.listOfUnexpectedChars.append(char)
-                
+            if not char.isalpha() and not char.isspace() and not char in OPS:
+                data.listUnexpectedChars.append(char)
 
-def getUnknownVars(data):
+def getQueries(data):
     for querieChar in data.allQueries:
-        if querieChar.isalpha() and querieChar not in data.listUnknownVars:
-            data.listUnknownVars.append(querieChar)
+        if querieChar.isalpha() and querieChar not in data.listQueries:
+            data.listQueries.append(querieChar)
 
 def getKnownVars(data):
     for factChar in data.allFacts:

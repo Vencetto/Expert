@@ -1,13 +1,14 @@
 from colorama import Fore
+from collections import deque
 
 class Data:
     allFacts = ""               # string with input facts
     allQueries = ""             # string with input queries
-    dictRules = {}              # dictionary of input rules (string - tuple)
+    allRules = []               # list of input rules
     dictVarsStatuses = {}       # dictionary (var, like 'A' - status, like 'True')
-    listUnknownVars = []        # list of vars to find - ?ABC, queries
-    listDependencies = []       # list of dependencies for algorithm, what we nned to find to get final answer
-    listUnexpectedChars = ()    # list of chars, that we do not expect to apper in constructions or couldn't recognise
+    listQueries = []            # list of vars to find - ?ABC, queries
+    stackDependencies = deque() # deque of dependencies for algorithm, what we nned to find to get final answer
+    listUnexpectedChars = []    # list of chars, that we do not expect to apper in constructions or couldn't recognise
 
     def showFacts(self):
         print(Fore.CYAN + "This was recognised as facts -> " + Fore.WHITE + self.allFacts)
@@ -16,11 +17,11 @@ class Data:
         print(Fore.CYAN + "This was recognised as queries -> " + Fore.WHITE + self.allQueries)
 
     def showEveryRule(self):
-        if len(self.dictRules) == 0:
+        if len(self.allRules) == 0:
             print(Fore.RED + "No rules were recognised")
             return
-        for key in self.dictRules:
-            print(Fore.YELLOW + "This was recognised as rule -> " + Fore.WHITE + str(key))
+        for rule in self.allRules:
+            print(Fore.YELLOW + "This was recognised as rule -> " + Fore.WHITE + rule)
 
     def showVarsStatuses(self):
         if len(self.dictVarsStatuses) == 0:
@@ -40,14 +41,14 @@ class Data:
         print()
 
     def showUnknownVars(self):
-        if len(self.listUnknownVars) == 0:
+        if len(self.listQueries) == 0:
             print(Fore.RED + "No vars need to explore.")
             return
-        print(Fore.MAGENTA + "Need to find " + Fore.WHITE + ", ".join(self.listUnknownVars))
+        print(Fore.MAGENTA + "Need to find " + Fore.WHITE + ", ".join(self.listQueries))
 
     def showUnexpectedChars(self):
-        if len(self.listOfUnexpectedChars) > 0:
-            print(Fore.RED + "Non recognised chars in input constructions -> " + ", ".join(self.listOfUnexpectedChars) + Fore.WHITE)
+        if len(self.listUnexpectedChars) > 0:
+            print(Fore.RED + "Non recognised chars in input constructions -> " + ", ".join(self.listUnexpectedChars) + Fore.WHITE)
         else:
             print(Fore.GREEN + "No unexpected chars were found" + Fore.WHITE)
 
@@ -59,6 +60,6 @@ class Data:
         self.showVarsStatuses()
         self.showUnexpectedChars()
 
-    def showresult(self):
-        for var in self.listUnknownVars:
-            print(Fore.YELLOW + var + " is " + Fore.GREEN + self.dictVarsStatuses[var])
+    def showResult(self):
+        for var in self.listQueries:
+            print(Fore.YELLOW + var + " is " + Fore.GREEN + str(self.dictVarsStatuses[var]))
