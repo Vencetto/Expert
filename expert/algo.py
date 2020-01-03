@@ -1,78 +1,51 @@
-from classes import Data
+from colorama import Fore
+from constants import BASIC_OP
 
 def algo(data):
 
-    # add first dapandencies from queries
-    for queryLetter in data.listQueries:
-        if queryLetter in data.dictVarsStatuses and data.dictVarsStatuses[queryLetter] == 'False' and not queryLetter in data.listDependencies:
-            data.stackDependencies.append(str(queryLetter))
-            print('{queryLetter} added to stack of dependencies')
-    
-    # check if all vars we need is already known
-    while len(data.stackDependencies) > 0:
-        
-        # go though every rule and find those letters which need to be found
-        for rule in data.allRules:
+	# add first dependencies from queries
+	for queryLetter in data.listQueries:
+		if queryLetter in data.dictVarsStatuses and data.dictVarsStatuses[queryLetter] == 'False' and not queryLetter in data.listDependencies:
+			data.stackDependencies.append(str(queryLetter))
+			print(Fore.WHITE + '{queryLetter} added to stack of dependencies')
 
-            # check vars in rule to be dependent / needed to be find / are in list listUnknownVars
-            if checkDependencies(rule.split('=>')[-1], data.listUnknownVars): # get right part of sentence, after '=>'
+	# check if all vars we need is already known
+	while len(data.stackDependencies) > 0:
 
-                # if all vars are known and operations are expected
-                if checkCanCalculate(rule.replace(' ', ''), data):
+		# go though every rule and find those letters which need to be found
+		for rule in data.allRules:
 
-                    # calculate rule and write vars
-                    
-                    # print previous result
-                    printPrevResult()
-                else:
-                    # go to next rule
-                    continue
+			# check vars in rule to be dependent / needed to be find / are in list listQueries
+			if check_unknown_vars(rule.split('=>')[-1], data.listQueries):  # get right part of sentence, after '=>'
 
-def checkDependencies(rule, listUnknownVars):
-    # check if in rule exists one of the wanted vars
-    if any(unknown in rule in listQueries): # this is not robust, check it later
+				# if all vars are known and sentence can be calculated
+				if check_unknown_vars(rule.replace(' ', ''), data.stackDependencies) == 0:
 
-        # DELETE NEXT ROW LATER
-        print(f'found one of the list {0} in {rule}'.format(', '.join(lisQueries)))
+					data.show_unknown_vars()
+					data.show_vars_statuses()
 
-        return 1
-    else:
-        return 0
-'''
+					# calculate rule and write vars
+				#	 calculate(rule.split('=>')[0]) LEFT
+				#	 calculate(rule.split('=>')[-1]) RIGHT
 
-resolve query:
-    lookup among atomic
-    if found
-        return
-    else
-        push query
-        resolve among complex
-        pop query
+					# also logic based on '=>' OR '<=>'
+					#
+					#
 
-resolve among complex:
-    find all propositions with query as a part of rhs
-    for query in found
-        result <- solve lhs
-        if result is undetermined
-            undetermined
-        if implication
-            if result is true
-                solve rhs as true
-            else
-                undetermined
-        else if iff
-            solve rhs as result
+					data.show_unknown_vars()
+					data.show_vars_statuses()
 
 
-solve rhs as result:
-    if result if undetermined
+def calculate(rule):
+	'''
+	 if result if undetermined
         undetermined
     if rhs is atomic
         result
     if rhs operation is NOT
         not result
     if binary operation (a,b):
-        let second = if fact == a then b else a 
+        let second = if fact == a then b else a
         if OR and result is false
             false
         if OR and result is true
@@ -91,5 +64,30 @@ solve rhs as result:
             return second
         if XOR and result is true
             not second
+	'''
 
-'''
+
+def check_unknown_vars(rule, list):
+	# check if in rule exists one of the wanted vars
+	if [unknown_var for unknown_var in list if(unknown_var in rule)]:  # check it later
+
+		"""Check whether 'str' contains ANY of the chars in 'set'"""
+		''' return 1 in [c in str for c in set]'''
+
+		# DELETE NEXT ROW LATER
+		print(f'found one of the list {0} in {rule}'.format(', '.join(list)))
+
+		return 1
+	else:
+		return 0
+
+
+def basic_op(v1, v2, op):
+	if op == '+':
+		return bool(v1) and bool(v2)
+	elif op == '|':
+		return bool(v1) or bool(v2)
+	elif op == '!':
+		return not bool(v2)
+	elif op == '^':
+		return bool(v1) != bool(v2)

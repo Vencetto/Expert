@@ -1,56 +1,77 @@
-from colorama import Fore, Style
+from colorama import Fore
 import re
 
 from constants import REGEXP_QUERIES, REGEXP_FACTS, REGEXP_ONE_RULE, OPS
 
-def parseInput(fileInput, data):
-    fault = False
 
-    tempList = re.findall(REGEXP_ONE_RULE, fileInput, re.MULTILINE)
-    for elem in tempList:
-        data.allRules.append("".join(elem).strip())
+def parse_input(file_input, data):
+	fault = False
 
-    if len(data.allRules) == 0:
-        print(Fore.YELLOW + "Rules was not found in file")
-        fault = True
-        
-    facts = re.search(REGEXP_FACTS, fileInput)
-    if not facts:
-        print(Fore.YELLOW + "Facts was not found in file")
-        fault = True
-    else:
-        data.allFacts = str(facts.group(0))
+	temp_list = re.findall(REGEXP_ONE_RULE, file_input, re.MULTILINE)
+	for elem in temp_list:
+		if correct_brackets(str(elem)):
+			data.allRules.append("".join(elem).strip())
+		else:
+			print(Fore.RED + '{0} seems to have troubles with brackets,  skipped'.format(str(elem)))  # maybe should check operations to be correct
 
-    queries = re.search(REGEXP_QUERIES, fileInput)
-    if not queries:
-        print(Fore.YELLOW + "Queries was not found in file")
-        fault = True
-    else:
-        data.allQueries = str(queries.group(0))
+	if len(data.allRules) == 0:
+		print(Fore.YELLOW + "Rules was not found in file")
+		fault = True
 
-    if fault:
-        print(Fore.RED + "Input file component not found")
-        return ;
-    else:
-        getVariables(data)
-        getQueries(data)
-        getKnownVars(data)
+	facts = re.search(REGEXP_FACTS, file_input)
+	if not facts:
+		print(Fore.YELLOW + "Facts was not found in file")
+		fault = True
+	else:
+		data.allFacts = str(facts.group(0))
+
+	queries = re.search(REGEXP_QUERIES, file_input)
+	if not queries:
+		print(Fore.YELLOW + "Queries was not found in file")
+		fault = True
+	else:
+		data.allQueries = str(queries.group(0))
+
+	if fault:
+		print(Fore.RED + "Input file component not found")
+		return
+	else:
+		get_variables(data)
+		get_queries(data)
+		get_known_vars(data)
 
 
-def getVariables(data):
-    for rule in data.allRules:
-        for char in rule:
-            if char.isalpha() and char not in data.dictVarsStatuses:
-                data.dictVarsStatuses[char] = False
-            if not char.isalpha() and not char.isspace() and not char in OPS:
-                data.listUnexpectedChars.append(char)
+def correct_brackets(rule):
+	open_br = '('
+	close_br = ')'
+	my_map = dict(zip(open_br, close_br))
+	queue = []
 
-def getQueries(data):
-    for querieChar in data.allQueries:
-        if querieChar.isalpha() and querieChar not in data.listQueries:
-            data.listQueries.append(querieChar)
+	for i in rule:
+		if i in open_br:
+			queue.append(my_map[i])
+		elif i in close_br:
+			if not queue or i != queue.pop():
+				return 0
+	return 1
 
-def getKnownVars(data):
-    for factChar in data.allFacts:
-        if factChar.isalpha() and factChar in data.dictVarsStatuses:
-            data.dictVarsStatuses[factChar] = True
+
+def get_variables(data):
+	for rule in data.allRules:
+		for char in rule:
+			if char.isalpha() and char not in data.dictVarsStatuses:
+				data.dictVarsStatuses[char] = False
+			if not char.isalpha() and not char.isspace() and not char in OPS:
+				data.listUnexpectedChars.append(char)
+
+
+def get_queries(data):
+	for querieChar in data.allQueries:
+		if querieChar.isalpha() and querieChar not in data.listQueries:
+			data.listQueries.append(querieChar)
+
+
+def get_known_vars(data):
+	for factChar in data.allFacts:
+		if factChar.isalpha() and factChar in data.dictVarsStatuses:
+			data.dictVarsStatuses[factChar] = True

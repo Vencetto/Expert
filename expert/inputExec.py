@@ -1,102 +1,107 @@
 import os
-from colorama import init, Fore, Style
+from colorama import Fore
 import tkinter
 from tkinter import filedialog
-from classes import Data
-
-def chooseFileBox():
-    root = tkinter.Tk()
-    root.withdraw()
-    return filedialog.askopenfilename()
 
 
-def sayHello():
-    os.system('cls' if os.name == 'nt' else 'clear')
-    
-    print(Fore.GREEN + "___________________________________________________________________________________________________________________________________________________")
-    print("      :::::::::: :::    ::: :::::::::  :::::::::: ::::::::: :::::::::::          ::::::::  :::   :::  :::::::: ::::::::::: ::::::::::   :::   ::: |")
-    print("     :+:        :+:    :+: :+:    :+: :+:        :+:    :+:    :+:             :+:    :+: :+:   :+: :+:    :+:    :+:     :+:         :+:+: :+:+: |")
-    print("    +:+         +:+  +:+  +:+    +:+ +:+        +:+    +:+    +:+             +:+         +:+ +:+  +:+           +:+     +:+        +:+ +:+:+ +:+ |")
-    print("   +#++:++#     +#++:+   +#++:++#+  +#++:++#   +#++:++#:     +#+             +#++:++#++   +#++:   +#++:++#++    +#+     +#++:++#   +#+  +:+  +#+  |")
-    print("  +#+         +#+  +#+  +#+        +#+        +#+    +#+    +#+                    +#+    +#+           +#+    +#+     +#+        +#+       +#+   |")
-    print(" #+#        #+#    #+# #+#        #+#        #+#    #+#    #+#             #+#    #+#    #+#    #+#    #+#    #+#     #+#        #+#       #+#    |")
-    print("########## ###    ### ###        ########## ###    ###    ###              ########     ###     ########     ###     ########## ###       ###     |")
-    print("---------------------------------------------------------------------------------------------------------------------------------------------------\n")
+def choose_file_box():
+	root = tkinter.Tk()
+	root.withdraw()
+	return filedialog.askopenfilename()
 
-def exeFlags(flags, data):
-    if 'l' in flags or 'L' in flags:
-        data.showAll()  
-    else:
-        if 'f' in flags or 'F' in flags:
-            data.showFacts()
-        if 'q' in flags or 'Q' in flags:
-            data.showQueries()
-        if 'r' in flags or 'R' in flags:
-            data.showEveryRule()
-        if 'v' in flags or 'V' in flags:
-            data.showVarsStatuses()
-        if 'u' in flags or 'U' in flags:
-            data.showUnknownVars()
-        if 'x' in flags or 'X' in flags:
-            data.showUnexpectedChars()
-    
-def showFlags():
-    print(Fore.GREEN + "\nAnything else ?")
-    print(Fore.YELLOW + "\t F -shows all facts")
-    print("\t Q -shows all queries")
-    print("\t R -shows every rule")
-    print("\t V -shows all vars and their statuses")
-    print("\t U -shows all unknown variables/queries")
-    print("\t X -shows all unexpected chars")
-    print("\t L -shows all")
-    print("\t N -exit" + Fore.WHITE)       
 
-def flagsFullCycle(data):
-    showFlags()
-    try:
-        flags = input()
-        if not ('n' in flags or 'N' in flags) and not flags.isspace():
-            exeFlags(flags, data)
-            flagsFullCycle(data)
-    except IOError:
-        return 0
+def say_hello():
+	os.system('cls' if os.name == 'nt' else 'clear')
 
-def gotAndCheckInput():
-    fileContent = ''
+	print(Fore.GREEN + "___________________________________________________________________________________________________________________________________________________")
+	print("      :::::::::: :::    ::: :::::::::  :::::::::: ::::::::: :::::::::::          ::::::::  :::   :::  :::::::: ::::::::::: ::::::::::   :::   ::: |")
+	print("     :+:        :+:    :+: :+:    :+: :+:        :+:    :+:    :+:             :+:    :+: :+:   :+: :+:    :+:    :+:     :+:         :+:+: :+:+: |")
+	print("    +:+         +:+  +:+  +:+    +:+ +:+        +:+    +:+    +:+             +:+         +:+ +:+  +:+           +:+     +:+        +:+ +:+:+ +:+ |")
+	print("   +#++:++#     +#++:+   +#++:++#+  +#++:++#   +#++:++#:     +#+             +#++:++#++   +#++:   +#++:++#++    +#+     +#++:++#   +#+  +:+  +#+  |")
+	print("  +#+         +#+  +#+  +#+        +#+        +#+    +#+    +#+                    +#+    +#+           +#+    +#+     +#+        +#+       +#+   |")
+	print(" #+#        #+#    #+# #+#        #+#        #+#    #+#    #+#             #+#    #+#    #+#    #+#    #+#    #+#     #+#        #+#       #+#    |")
+	print("########## ###    ### ###        ########## ###    ###    ###              ########     ###     ########     ###     ########## ###       ###     |")
+	print("---------------------------------------------------------------------------------------------------------------------------------------------------\n")
 
-    for retryCounter in range(0, 3):
 
-        print(Fore.GREEN + "Write file name: (q for exit OR v for visual mode)" + Fore.WHITE)
-        try:
-            writtenInput = input()
-        except IOError:
-            return 0
+def exe_flags(flags, data):
+	if 'l' in flags or 'L' in flags:
+		data.show_all()
+	else:
+		if 'f' in flags or 'F' in flags:
+			data.show_facts()
+		if 'q' in flags or 'Q' in flags:
+			data.show_queries()
+		if 'r' in flags or 'R' in flags:
+			data.show_every_rule()
+		if 'v' in flags or 'V' in flags:
+			data.show_vars_statuses()
+		if 'u' in flags or 'U' in flags:
+			data.show_unknown_vars()
+		if 'x' in flags or 'X' in flags:
+			data.show_unexpected_chars()
 
-        if writtenInput == "q" or writtenInput == "Q":
-            return 0
-        if writtenInput == "v" or writtenInput == "V":
-            writtenInput = chooseFileBox()
 
-        try:
-            with open(writtenInput) as file:
-                fileContent = file.read()
-        except IOError:
-            print(Fore.RED + f"Troubles with reading file: '{writtenInput}'") 
+def show_flags():
+	print(Fore.GREEN + "\nAnything else ?")
+	print(Fore.YELLOW + "\t F -shows all facts")
+	print("\t Q -shows all queries")
+	print("\t R -shows every rule")
+	print("\t V -shows all vars and their statuses")
+	print("\t U -shows all unknown variables/queries")
+	print("\t X -shows all unexpected chars")
+	print("\t L -shows all")
+	print("\t N -exit" + Fore.WHITE)
 
-        if fileContent:
-            return fileContent
-    return 0
 
-def getArgInput(fileName):
-    fileContent = ''
+def flags_full_cycle(data):
+	show_flags()
+	try:
+		flags = input()
+		if not ('n' in flags or 'N' in flags) and not flags.isspace():
+			exe_flags(flags, data)
+			flags_full_cycle(data)
+	except IOError:
+		return 0
 
-    try:
-       with open(fileName) as file:
-           fileContent = file.read()
-    except IOError:
-       print(Fore.RED + f"Troubles with reading file: '{fileName}'") 
 
-    if not fileContent.isspace():
-        return fileContent
-    return ''
+def got_and_check_input():
+	file_content = ''
+
+	for retryCounter in range(0, 3):
+
+		print(Fore.GREEN + "Write file name: (q for exit OR v for visual mode)" + Fore.WHITE)
+		try:
+			written_input = input()
+		except IOError:
+			return 0
+
+		if written_input == "q" or written_input == "Q":
+			return 0
+		if written_input == "v" or written_input == "V":
+			written_input = choose_file_box()
+
+		try:
+			with open(written_input) as file:
+				file_content = file.read()
+		except IOError:
+			print(Fore.RED + f"Troubles with reading file: '{written_input}'")
+
+		if file_content:
+			return file_content
+	return 0
+
+
+def get_arg_input(file_name):
+	file_name = ''
+
+	try:
+		with open(file_name) as file:
+			file_content = file.read()
+	except IOError:
+		print(Fore.RED + f"Troubles with reading file: '{file_name}'")
+
+	if not file_content.isspace():
+		return file_content
+	return ''
 
