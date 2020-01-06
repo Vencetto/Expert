@@ -1,5 +1,6 @@
 from colorama import Fore
-from constants import BASIC_OP
+from evaluate import evaluate
+
 
 def algo(data):
 
@@ -24,9 +25,8 @@ def algo(data):
 					data.show_unknown_vars()
 					data.show_vars_statuses()
 
-					# calculate rule and write vars
-				#	 calculate(rule.split('=>')[0]) LEFT
-				#	 calculate(rule.split('=>')[-1]) RIGHT
+					#   calculate rule and write vars
+					evaluate(rule.split('=>')[0])
 
 					# also logic based on '=>' OR '<=>'
 					#
@@ -35,16 +35,24 @@ def algo(data):
 					data.show_unknown_vars()
 					data.show_vars_statuses()
 
+'''
+def calculate(rule, data):
+	
+	if result if undetermined
+		undetermined
+	if rule.isalpha() and len(rule) == 1            # easy case ,only one letter
+		return data.dictVarsStatuses(rule)
+	if '!' in rule and len(rule) > 1                # NOT case
+		letter = rule.find('!') + 1
+		return not data.dictVarsStatuses(letter)
+	if '(' in rule and ')' in rule:                 # brackets case
+		first_index = rule.find('(')
+		second_index = rule.find(')')
 
-def calculate(rule):
-	'''
-	 if result if undetermined
-        undetermined
-    if rhs is atomic
-        result
-    if rhs operation is NOT
-        not result
-    if binary operation (a,b):
+		calculate(rule[first_index:second_index])
+		# maybe replace with returned value part of string
+
+	if binary operation (a,b):                      # binary operation
         let second = if fact == a then b else a
         if OR and result is false
             false
@@ -75,19 +83,8 @@ def check_unknown_vars(rule, list):
 		''' return 1 in [c in str for c in set]'''
 
 		# DELETE NEXT ROW LATER
-		print(f'found one of the list {0} in {rule}'.format(', '.join(list)))
+		print('found one of the list {0} in {1}'.format(', '.join(list), rule))
 
 		return 1
 	else:
 		return 0
-
-
-def basic_op(v1, v2, op):
-	if op == '+':
-		return bool(v1) and bool(v2)
-	elif op == '|':
-		return bool(v1) or bool(v2)
-	elif op == '!':
-		return not bool(v2)
-	elif op == '^':
-		return bool(v1) != bool(v2)
