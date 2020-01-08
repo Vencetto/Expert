@@ -1,9 +1,9 @@
 from colorama import Fore
 from evaluate import evaluate
+import re
 
 
 def algo(data):
-
 	# add first dependencies from queries
 	for queryLetter in data.listQueries:
 		if queryLetter in data.dictVarsStatuses and data.dictVarsStatuses[queryLetter] == 'False' and not queryLetter in data.listDependencies:
@@ -22,18 +22,43 @@ def algo(data):
 				# if all vars are known and sentence can be calculated
 				if check_unknown_vars(rule.replace(' ', ''), data.stackDependencies) == 0:
 
+					# this for debug
 					data.show_unknown_vars()
 					data.show_vars_statuses()
 
 					#   calculate rule and write vars
-					evaluate(rule.split('=>')[0])
+					lhs = rule.split('=>')[0].strip().replace(' ', '')
+					rhs = rule.split('=>')[-1].strip().replace(' ', '')
+					if '<=>' in rule:
+						write_result(rhs, lhs, data)
+					elif '=>' in rule:
+						write_result(lhs, rhs, data)
+					else:
+						print('Equality sign not found. Da hell?')
 
-					# also logic based on '=>' OR '<=>'
-					#
-					#
-
+					# this for debug
 					data.show_unknown_vars()
 					data.show_vars_statuses()
+
+
+def write_result(src, des, data):
+	print('src -> ' + src + '| des -> ' + des + '|')
+	result = evaluate(src, data.dictVarsStatuses)
+	if result:
+		if len(des) == 0 and des.isalpha() and des in data.dictVarsStatuses.keys:
+			print('{0} status {1} changed to {2}'.format(des, data.dictVarsStatuses[des], result))
+			data.dictVarsStatuses[des] = bool(result)
+		else:
+			match = re.fullmatch('^\(?[A-Z](\+\(?[A-Z]\)?)*', des)
+			if match is not None:  # if destination is in correct form
+				print('Got match for {0} -> {1}'.format(des, match.string))
+				#for char in des:
+				'''-----------###-----------'''
+			else:
+				print('no match for {0}'.format(des))
+	else:
+		print('{0} cannot be calculated. Destination not writable'.format(src))
+
 
 '''
 def calculate(rule, data):
