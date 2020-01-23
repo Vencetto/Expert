@@ -6,39 +6,44 @@ import re
 def algo(data):
 	# add first dependencies from queries
 	for queryLetter in data.listQueries:
-		if queryLetter in data.dictVarsStatuses and data.dictVarsStatuses[queryLetter] == 'False' and not queryLetter in data.listDependencies:
+		if queryLetter in data.dictVarsStatuses and data.dictVarsStatuses[queryLetter] == 'False':
+			print(Fore.WHITE + '{queryLetter} is searching right now')
 			data.stackDependencies.append(str(queryLetter))
-			print(Fore.WHITE + '{queryLetter} added to stack of dependencies')
 
-	# check if all vars we need is already known
-	while len(data.stackDependencies) > 0:
+			# check if all vars we need is already known
+			while len(data.stackDependencies) > 0:
 
-		# go though every rule and find those letters which need to be found
-		for rule in data.allRules:
+				# go though every rule and find those letters which need to be found
+				for rule in data.allRules:
 
-			# check vars in rule to be dependent / needed to be find / are in list listQueries
-			if check_unknown_vars(rule.split('=>')[-1], data.listQueries):  # get right part of sentence, after '=>'
+					# if all vars are known and sentence can be calculated
+					if check_unknown_vars(rule.replace(' ', ''), data.stackDependencies) == 0:
 
-				# if all vars are known and sentence can be calculated
-				if check_unknown_vars(rule.replace(' ', ''), data.stackDependencies) == 0:
+						if '<=>' in rule:
+							solver(rule.split('<=>')[-1], rule.split('=>')[0], data)
+						elif '=>' in rule:
+							solver(rule.split('<=>')[0], rule.split('=>')[-1], data)
 
-					# this for debug
-					data.show_unknown_vars()
-					data.show_vars_statuses()
+							# this for debug
+							data.show_unknown_vars()
+							data.show_vars_statuses()
 
-					#   calculate rule and write vars
-					lhs = rule.split('=>')[0].strip().replace(' ', '')
-					rhs = rule.split('=>')[-1].strip().replace(' ', '')
-					if '<=>' in rule:
-						write_result(rhs, lhs, data)
-					elif '=>' in rule:
-						write_result(lhs, rhs, data)
-					else:
-						print('Equality sign not found. Da hell?')
+							#   calculate rule and write vars
+							# lhs = rule.split('=>')[0].strip().replace(' ', '')
+							# rhs = rule.split('=>')[-1].strip().replace(' ', '')
 
-					# this for debug
-					data.show_unknown_vars()
-					data.show_vars_statuses()
+							# write_result(rhs, lhs, data)
+							# write_result(lhs, rhs, data)
+
+							# this for debug
+							# data.show_unknown_vars()
+							# data.show_vars_statuses()
+
+		elif queryLetter in data.dictVarsStatuses and data.dictVarsStatuses[queryLetter] == 'True':
+			print(Fore.WHITE + '{queryLetter} is already known as True')
+
+
+def solver(dest, src, data):
 
 
 def write_result(src, des, data):
