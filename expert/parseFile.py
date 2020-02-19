@@ -36,7 +36,6 @@ def parse_input(file_input, data):
 		print(Fore.RED + "Input file component not found")
 		return
 	else:
-		get_variables(data)
 		get_queries(data)
 		get_known_vars(data)
 
@@ -56,15 +55,6 @@ def correct_brackets(rule):
 	return 1
 
 
-def get_variables(data):
-	for rule in data.allRules:
-		for char in rule:
-			if char.isalpha() and char not in data.dictVarsStatuses:
-				data.dictVarsStatuses[char] = False
-			if not char.isalpha() and not char.isspace() and not char in OPS:
-				data.listUnexpectedChars.append(char)
-
-
 def get_queries(data):
 	for querieChar in data.allQueries:
 		if querieChar.isalpha() and querieChar not in data.listQueries:
@@ -73,5 +63,5 @@ def get_queries(data):
 
 def get_known_vars(data):
 	for factChar in data.allFacts:
-		if factChar.isalpha() and factChar in data.dictVarsStatuses:
+		if factChar.isalpha():
 			data.dictVarsStatuses[factChar] = True

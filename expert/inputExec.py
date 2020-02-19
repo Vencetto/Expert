@@ -38,8 +38,6 @@ def exe_flags(flags, data):
 			data.show_vars_statuses()
 		if 'u' in flags or 'U' in flags:
 			data.show_unknown_vars()
-		if 'x' in flags or 'X' in flags:
-			data.show_unexpected_chars()
 
 
 def show_flags():
@@ -49,7 +47,6 @@ def show_flags():
 	print("\t R -shows every rule")
 	print("\t V -shows all vars and their statuses")
 	print("\t U -shows all unknown variables/queries")
-	print("\t X -shows all unexpected chars")
 	print("\t L -shows all")
 	print("\t N -exit" + Fore.WHITE)
 
@@ -93,7 +90,7 @@ def got_and_check_input():
 
 
 def get_arg_input(file_name):
-	file_name = ''
+	file_content = ''
 
 	try:
 		with open(file_name) as file:
